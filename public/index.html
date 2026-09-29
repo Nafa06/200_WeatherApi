@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather API - MapTiler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white; display: flex; justify-content: center;
+            align-items: center; height: 100vh; margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            padding: 30px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 400px; border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px;}
+        .header h3 { margin: 5px 0; font-size: 16px; color: #4facfe; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input {
+            flex: 1; padding: 10px; border-radius: 8px; border: none;
+            background: rgba(255,255,255,0.2); color: white; outline: none; font-family: 'Poppins', sans-serif;
+        }
+        .search-box input::placeholder { color: #ddd; }
+        .search-box button {
+            padding: 10px 15px; border: none; border-radius: 8px;
+            background: #4facfe; color: white; cursor: pointer; font-weight: bold; font-family: 'Poppins', sans-serif;
+        }
+        .search-box button:hover { background: #00f2fe; color: #000; }
+        .data-row {
+            display: flex; justify-content: space-between; padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .data-row:last-child { border-bottom: none; }
+        .label { opacity: 0.8; font-size: 14px; }
+        .value { font-weight: 600; text-align: right; font-size: 15px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h3>Muhammad Naufal Anggardi</h3>
+            <h3>20240140200</h3>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="inputLokasi" placeholder="Masukkan nama lokasi...">
+            <button onclick="cariLokasi()">Cari</button>
+        </div>
+
+        <div class="data-row"><span class="label">Negara</span><span class="value" id="negara">-</span></div>
+        <div class="data-row"><span class="label">Provinsi</span><span class="value" id="provinsi">-</span></div>
+        <div class="data-row"><span class="label">Kecamatan</span><span class="value" id="kecamatan">-</span></div>
+        <div class="data-row"><span class="label">Longitude</span><span class="value" id="longitude">-</span></div>
+        <div class="data-row"><span class="label">Latitude</span><span class="value" id="latitude">-</span></div>
+    </div>
+
+    <script>
+        function cariLokasi() {
+            const lokasi = document.getElementById('inputLokasi').value;
+            if(!lokasi) {
+                alert('Tolong masukkan nama lokasi dulu!');
+                return;
+            }
+
+            fetch(`/api/lokasi?kota=${encodeURIComponent(lokasi)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.message) {
+                        alert(data.message);
+                        return;
+                    }
+                    
+                    document.getElementById('negara').innerText = data.negara;
+                    document.getElementById('provinsi').innerText = data.provinsi;
+                    document.getElementById('kecamatan').innerText = data.kecamatan;
+                    document.getElementById('longitude').innerText = data.longitude.toFixed(5);
+                    document.getElementById('latitude').innerText = data.latitude.toFixed(5);
+                })
+                .catch(err => {
+                    alert('Terjadi kesalahan saat mengambil data.');
+                    console.error(err);
+                });
+        }
+    </script>
+</body>
+</html>
