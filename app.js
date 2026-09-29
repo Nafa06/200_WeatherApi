@@ -11,7 +11,7 @@ app.get("/api/lokasi", async (req, res) => {
     const kota = req.query.kota;
     if (!kota) return res.status(400).json({ message: "Masukkan nama lokasi" });
 
-    const apiKey = "MASUKKAN_API_KEY_BARUMU_DISINI"; 
+    const apiKey = "dZTH3fXf1nmwRv4HcgEB"; 
     const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(kota)}.json?key=${apiKey}`;
 
     try {
@@ -39,16 +39,8 @@ app.get("/api/lokasi", async (req, res) => {
         if (negara === '-' && place.place_type.includes('country')) negara = place.text;
         if (provinsi === '-' && place.place_type.includes('region')) provinsi = place.text;
 
-        // Alternatif jika kecamatan kosong: 
-        // 1. Ambil dari properti teks utama tempat
-        // 2. Jika masih kosong, ambil pecahan kata pertama dari input user
         if (kecamatan === "-") {
-            if (place.text && place.text.toLowerCase() !== kota.toLowerCase()) {
-                kecamatan = place.text;
-            } else {
-                // Ambil kata pertama dari input pencarian sebagai fallback representatif
-                kecamatan = kota.charAt(0).toUpperCase() + kota.slice(1);
-            }
+            kecamatan = place.text || kota;
         }
 
         res.json({
