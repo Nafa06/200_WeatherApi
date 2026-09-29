@@ -5,7 +5,9 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
-app.use(express.static(path.join(__dirname, "public")));
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 
 app.get("/api/lokasi", async (req, res) => {
     const kota = req.query.kota;
@@ -38,10 +40,7 @@ app.get("/api/lokasi", async (req, res) => {
 
         if (negara === '-' && place.place_type.includes('country')) negara = place.text;
         if (provinsi === '-' && place.place_type.includes('region')) provinsi = place.text;
-
-        if (kecamatan === "-") {
-            kecamatan = place.text || kota;
-        }
+        if (kecamatan === "-") kecamatan = place.text || kota;
 
         res.json({
             negara: negara,
